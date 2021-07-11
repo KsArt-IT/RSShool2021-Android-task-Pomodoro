@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="small_indent">8dp</dimen>
+    <dimen name="large_indent">16dp</dimen>
+    <dimen name="margin_top">8dp</dimen>
+    <dimen name="margin_end">8dp</dimen>
+    <!--    time -->
+    <dimen name="time_margin_start">16dp</dimen>
+</resources>

@@ -2,8 +2,11 @@
 <resources>
     <dimen name="small_indent">8dp</dimen>
     <dimen name="large_indent">16dp</dimen>
-    <dimen name="margin_top">8dp</dimen>
-    <dimen name="margin_end">8dp</dimen>
+    <dimen name="top_margin">8dp</dimen>
+    <dimen name="end_margin">8dp</dimen>
+    <dimen name="horizontal_margin">16dp</dimen>
+    <dimen name="vertical_margin">16dp</dimen>
     <!--    time -->
+    <dimen name="time_margin">10dp</dimen>
     <dimen name="time_margin_start">16dp</dimen>
 </resources>

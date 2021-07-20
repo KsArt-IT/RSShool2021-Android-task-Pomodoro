@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="blue_300">#64b5f6</color>
-
-    <color name="light_green_300">#aed581</color>
-    <color name="light_green_light_300">#e1ffb1</color>
-    <color name="light_green_dark_300">#7da453</color>
-
-    <color name="yellow_300">#fff176</color>
-    <color name="yellow_light_300">#ffffa8</color>
-    <color name="yellow_dark_300">#cabf45</color>
-
+    <color name="transparent">#00000000</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="red_50">#ffebee</color>
+    <color name="red_100">#ffcdd2</color>
+
+    <color name="red_800">#c62828</color>
+    <color name="red_light_800">#ff5f52</color>
+    <color name="red_dark_800">#8e0000</color>
+
+    <color name="red_300">#e57373</color>
+    <color name="red_light_300">#e57373</color>
+    <color name="red_dark_300">#e57373</color>
+
+    <color name="red_400">#ef5350</color>
+    <color name="red_light_400">#ff867c</color>
+    <color name="red_dark_400">#b61827</color>
+
 </resources>

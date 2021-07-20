@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/small_indent">
+
+    <TextView
+        android:id="@+id/title"
+        style="?attr/textAppearanceHeadline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/time_margin"
+        android:text="@string/add_timer_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <NumberPicker
+        android:id="@+id/hours_picker"
+        android:layout_width="50dp"
+        android:layout_height="150dp"
+        android:layout_marginEnd="@dimen/time_margin"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/add_button"
+        app:layout_constraintEnd_toStartOf="@+id/minutes_picker"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title" />
+
+    <NumberPicker
+        android:id="@+id/minutes_picker"
+        android:layout_width="50dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="@dimen/time_margin"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/hours_picker"
+        app:layout_constraintEnd_toStartOf="@+id/seconds_picker"
+        app:layout_constraintStart_toEndOf="@+id/hours_picker"
+        app:layout_constraintTop_toTopOf="@+id/hours_picker" />
+
+    <NumberPicker
+        android:id="@+id/seconds_picker"
+        android:layout_width="50dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/hours_picker"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/minutes_picker"
+        app:layout_constraintTop_toTopOf="@+id/hours_picker" />
+
+    <Button
+        android:id="@+id/add_button"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/small_indent"
+        android:text="@string/add_button_text"
+        app:layout_constraintEnd_toEndOf="@+id/seconds_picker"
+        app:layout_constraintStart_toStartOf="@+id/hours_picker"
+        app:layout_constraintTop_toBottomOf="@+id/hours_picker" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

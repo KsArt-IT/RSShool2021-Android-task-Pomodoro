@@ -1,0 +1,10 @@
+<resources>
+    <declare-styleable name="ProgressCircleView">
+        <attr name="colorStroke" format="color" />
+        <attr name="colorFill" format="color" />
+        <attr name="fillStyle" format="enum">
+            <enum name="fill" value="0" />
+            <enum name="stroke" value="1" />
+        </attr>
+    </declare-styleable>
+</resources>

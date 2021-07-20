@@ -3,8 +3,26 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Projects/KsArT/RS_School_2021/RSShool2021-Android-task-Pomodoro/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1825" />
+        <entry key="..\:/Projects/KsArT/RS_School_2021/RSShool2021-Android-task-Pomodoro/app/src/main/res/drawable/animated_minus.xml" value="0.172" />
+        <entry key="..\:/Projects/KsArT/RS_School_2021/RSShool2021-Android-task-Pomodoro/app/src/main/res/drawable/animated_plus.xml" value="0.1" />
+        <entry key="..\:/Projects/KsArT/RS_School_2021/RSShool2021-Android-task-Pomodoro/app/src/main/res/drawable/blinking_circle.xml" value="0.1825" />
+        <entry key="..\:/Projects/KsArT/RS_School_2021/RSShool2021-Android-task-Pomodoro/app/src/main/res/drawable/circle.xml" value="0.1825" />
+        <entry key="..\:/Projects/KsArT/RS_School_2021/RSShool2021-Android-task-Pomodoro/app/src/main/res/drawable/divider.xml" value="0.1825" />
+        <entry key="..\:/Projects/KsArT/RS_School_2021/RSShool2021-Android-task-Pomodoro/app/src/main/res/drawable/ic_2.xml" value="0.1825" />
+        <entry key="..\:/Projects/KsArT/RS_School_2021/RSShool2021-Android-task-Pomodoro/app/src/main/res/drawable/ic_3.xml" value="0.1825" />
+        <entry key="..\:/Projects/KsArT/RS_School_2021/RSShool2021-Android-task-Pomodoro/app/src/main/res/drawable/ic_5.xml" value="0.1825" />
+        <entry key="..\:/Projects/KsArT/RS_School_2021/RSShool2021-Android-task-Pomodoro/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
+        <entry key="..\:/Projects/KsArT/RS_School_2021/RSShool2021-Android-task-Pomodoro/app/src/main/res/drawable/ic_pause.xml" value="0.1825" />
+        <entry key="..\:/Projects/KsArT/RS_School_2021/RSShool2021-Android-task-Pomodoro/app/src/main/res/drawable/ic_play.xml" value="0.1825" />
+        <entry key="..\:/Projects/KsArT/RS_School_2021/RSShool2021-Android-task-Pomodoro/app/src/main/res/drawable/minus.xml" value="0.1825" />
+        <entry key="..\:/Projects/KsArT/RS_School_2021/RSShool2021-Android-task-Pomodoro/app/src/main/res/drawable/plus.xml" value="0.1825" />
         <entry key="..\:/Projects/KsArT/RS_School_2021/RSShool2021-Android-task-Pomodoro/app/src/main/res/layout/activity_main.xml" value="0.1859375" />
+        <entry key="..\:/Projects/KsArT/RS_School_2021/RSShool2021-Android-task-Pomodoro/app/src/main/res/layout/dialog_add_timer.xml" value="0.1859375" />
+        <entry key="..\:/Projects/KsArT/RS_School_2021/RSShool2021-Android-task-Pomodoro/app/src/main/res/layout/fab.xml" value="0.1859375" />
         <entry key="..\:/Projects/KsArT/RS_School_2021/RSShool2021-Android-task-Pomodoro/app/src/main/res/layout/fragment_main.xml" value="0.1859375" />
+        <entry key="..\:/Projects/KsArT/RS_School_2021/RSShool2021-Android-task-Pomodoro/app/src/main/res/layout/item_stopwatch.xml" value="0.1859375" />
+        <entry key="..\:/Projects/KsArT/RS_School_2021/RSShool2021-Android-task-Pomodoro/app/src/main/res/layout/item_timer.xml" value="0.25" />
       </map>
     </option>
   </component>

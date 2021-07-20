@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Pomodoro</string>
+
+    <string name="pomodoro_title">Pomodoro</string>
+    <string name="start_button_text">Start</string>
+    <string name="pause_button_text">Stop</string>
+    <string name="add_timer_text">Add Timer</string>
+    <string name="cancel_button_text">Cancel</string>
+    <string name="add_button_text">Add</string>
+    <string name="delete_button_description">Delete timer</string>
+
 </resources>

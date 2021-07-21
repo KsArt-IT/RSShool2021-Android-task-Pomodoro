@@ -3,15 +3,13 @@ package ru.ksart.pomodoro.presentation.ui.model
 import android.os.CountDownTimer
 
 class DecCountDownTimer(
-    private val onTick: () -> Unit,
-    private val onFinish: () -> Unit
+    private var timeMs: Long,
+    private val onTickTimer: (time: Long) -> Unit,
+    private val onFinishTimer: () -> Unit
 ) {
     private var countDownTimer: CountDownTimer? = null
-    private var current = 0L
 
-    fun initTimer(timer: Long) {
-        cancel()
-        current = timer
+    init {
         countDownTimer = getCountDownTimer()
     }
 
@@ -21,18 +19,19 @@ class DecCountDownTimer(
 
     fun cancel() {
         countDownTimer?.cancel()
+        countDownTimer = null
     }
 
     private fun getCountDownTimer(): CountDownTimer {
-        return object : CountDownTimer(current, TIMER_INTERVAL) {
+        return object : CountDownTimer(timeMs, TIMER_INTERVAL) {
 
             override fun onTick(millisUntilFinished: Long) {
-                current -= TIMER_INTERVAL
-                onTick
+                timeMs -= TIMER_INTERVAL
+                onTickTimer(timeMs)
             }
 
             override fun onFinish() {
-                onFinish
+                onFinishTimer
             }
         }
     }

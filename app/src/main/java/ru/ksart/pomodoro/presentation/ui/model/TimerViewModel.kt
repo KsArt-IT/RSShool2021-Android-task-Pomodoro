@@ -1,6 +1,5 @@
 package ru.ksart.pomodoro.presentation.ui.model
 
-import android.os.CountDownTimer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
@@ -12,8 +11,7 @@ import ru.ksart.pomodoro.utils.DebugHelper
 class TimerViewModel : ViewModel() {
     private val timers = mutableListOf<TimerWatch>()
     private var nextId = 0
-    private val TIMER_INTERVAL = 100L // 1 раз в секунду
-    private var countDownTimer: CountDownTimer? = null
+    private var decCountDownTimer: DecCountDownTimer? = null
     private var timerCurrent: TimerWatch? = null
     private var fabJob: Job? = null
 
@@ -21,17 +19,19 @@ class TimerViewModel : ViewModel() {
     private val _listTimers = MutableStateFlow<List<TimerWatch>>(emptyList())
     val listTimers: StateFlow<List<TimerWatch>> = _listTimers.asStateFlow()
 
-    private val _timerBackgrounded = MutableStateFlow<Long>(0)
+    // установка времени таймера для сервиса
+    private val _timerBackgrounded = MutableStateFlow(0L)
     val timerBackgrounded: StateFlow<Long> = _timerBackgrounded.asStateFlow()
 
-    private val _isUseFab = MutableStateFlow<Boolean>(false)
+    // для сворачивания кнопок
+    private val _isUseFab = MutableStateFlow(false)
     val isUseFab: StateFlow<Boolean> = _isUseFab.asStateFlow()
 
     fun init() {
         timers.clear()
         nextId = 0
-        countDownTimer?.cancel()
-        countDownTimer = null
+        decCountDownTimer?.cancel()
+        decCountDownTimer = null
         timerCurrent = null
         fabJob?.cancel()
         fabJob = null
@@ -89,7 +89,7 @@ class TimerViewModel : ViewModel() {
 
     private fun stopTimerCurrent() {
         timerCurrent?.run {
-            countDownTimer?.cancel()
+            decCountDownTimer?.cancel()
             isStarted = false
             setListByTimerCurrent()
         }
@@ -98,7 +98,6 @@ class TimerViewModel : ViewModel() {
     private fun stopTimerCurrent(id: Int) {
         timerCurrent?.takeIf { it.id == id }?.let {
             stopTimerCurrent()
-//            setListByTimerCurrent()
         }
     }
 
@@ -109,51 +108,30 @@ class TimerViewModel : ViewModel() {
             isFinished = false,
         )
         timerCurrent?.run {
-            countDownTimer = getCountDownTimer(this)
-            countDownTimer?.start()
+            decCountDownTimer = DecCountDownTimer(current, ::onTickTimer, ::onFinishTimer)
+            decCountDownTimer?.start()
 
             setListByTimerCurrent()
         }
     }
 
-    private fun getCountDownTimer(timerWatch: TimerWatch): CountDownTimer {
-        return object : CountDownTimer(timerWatch.current, TIMER_INTERVAL) {
+    private fun onTickTimer(time: Long) {
+        timerCurrent?.run {
+            current = time
 
-            override fun onTick(millisUntilFinished: Long) {
-                if (timerWatch.isStarted) {
-                    timerWatch.current -= TIMER_INTERVAL
-                    DebugHelper.log("TimerViewModel|onTick set list id=${timerWatch.id}, time=${timerWatch.current}")
-                    setListByTimerCurrent()
-                }
-            }
-
-            override fun onFinish() {
-                DebugHelper.log("TimerViewModel|onFinish set list id=${timerWatch.id}, time=${timerWatch.current}")
-                timerWatch.run {
-                    isStarted = false
-                    isFinished = true
-                    current = time
-                }
-                setListByTimerCurrent()
-            }
+            setListByTimerCurrent()
         }
     }
 
-/*
-    private fun stopTimer(timerWatch: TimerWatch) {
-        stopTimerCurrent(timerWatch)
-        timerWatch.isStarted = false
-        setList()
-    }
-*/
+    private fun onFinishTimer() {
+        timerCurrent?.run {
+            isStarted = false
+            isFinished = true
+            current = time
 
-/*
-    private fun restartTimer(timerWatch: TimerWatch) {
-        timerWatch.isStarted = false
-        timerWatch.current = timerWatch.time
-        startTimer(timerWatch)
+            setListByTimerCurrent()
+        }
     }
-*/
 
     private fun deleteTimer(timerWatch: TimerWatch) {
         stopTimerCurrent(timerWatch.id)
@@ -176,11 +154,10 @@ class TimerViewModel : ViewModel() {
     private fun setList() {
         DebugHelper.log("TimerViewModel|setList")
         _listTimers.value = timers.toList()
-//        _listTimers.value = _listTimers.value.first.not() to timers.toList()
     }
 
     override fun onCleared() {
-        countDownTimer?.cancel()
+        decCountDownTimer?.cancel()
         fabJob?.cancel()
         super.onCleared()
     }

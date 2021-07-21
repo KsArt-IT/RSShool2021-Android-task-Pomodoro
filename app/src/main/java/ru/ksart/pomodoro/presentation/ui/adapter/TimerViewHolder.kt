@@ -9,9 +9,9 @@ import ru.ksart.pomodoro.R
 import ru.ksart.pomodoro.databinding.ItemTimerBinding
 import ru.ksart.pomodoro.model.data.TimerAction
 import ru.ksart.pomodoro.model.data.TimerWatch
+import ru.ksart.pomodoro.presentation.extensions.displayTime
 import ru.ksart.pomodoro.utils.DebugHelper
 import ru.ksart.pomodoro.utils.isAndroid6
-import ru.ksart.pomodoro.presentation.extensions.displayTime
 
 class TimerViewHolder(
     private val binding: ItemTimerBinding,
@@ -19,6 +19,8 @@ class TimerViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private var id = -1
+    private var isStarted = false
+    private var isFinished = false
 
     init {
         binding.startPauseButton.setOnClickListener {
@@ -50,14 +52,14 @@ class TimerViewHolder(
         )
     }
 
-    private fun changeButton(started: Boolean, context: Context) {
+    private fun changeButton(started: Boolean) {
         DebugHelper.log("TimerViewHolder|changeButton started=$started")
         if (started) {
-            binding.startPauseButton.text = context.getString(R.string.pause_button_text)
+            binding.startPauseButton.setText(R.string.pause_button_text)
             binding.blinkingIndicator.isInvisible = false
             (binding.blinkingIndicator.background as? AnimationDrawable)?.start()
         } else {
-            binding.startPauseButton.text = context.getString(R.string.start_button_text)
+            binding.startPauseButton.setText(R.string.start_button_text)
             binding.blinkingIndicator.isInvisible = true
             (binding.blinkingIndicator.background as? AnimationDrawable)?.stop()
         }
@@ -67,33 +69,34 @@ class TimerViewHolder(
     fun bind(timer: TimerWatch) {
         DebugHelper.log("----------------------------------------------")
         DebugHelper.log("TimerViewHolder|bind id=$id ? timer.id=${timer.id}")
-        val isTimerChanged = id != timer.id
-        val isTimerChangedStart = timer.isStartedOld != timer.isStarted
-        val isTimerChangedFinished = timer.isFinishedOld != timer.isFinished
-        id = timer.id
-        timer.currentOld = timer.current
-        timer.isStartedOld = timer.isStarted
-        timer.isFinishedOld = timer.isFinished
+        if (id != timer.id) {
+            // обновляем все
+            id = timer.id
+            isStarted = timer.isStarted
+            isFinished = timer.isFinished
+
+            binding.progress.setPeriod(timer.time)
+
+            DebugHelper.log("TimerViewHolder|isTimerChanged ----------------------------------")
+
+            changeBackgroundColor(timer.isFinished, binding.root.context)
+            changeButton(timer.isStarted)
+        } else {
+            // обновляем только изменения
+            if (isFinished != timer.isFinished) {
+                isFinished = timer.isFinished
+                DebugHelper.log("TimerViewHolder|isFinished ----------------------------------")
+                changeBackgroundColor(timer.isFinished, binding.root.context)
+            }
+            if (isStarted != timer.isStarted) {
+                isStarted = timer.isStarted
+                DebugHelper.log("TimerViewHolder|isTimerChangedStart ----------------------------------")
+                changeButton(timer.isStarted)
+            }
+        }
         // отобразим время
         binding.timer.text = timer.current.displayTime()
         // отобразим прогресс
         binding.progress.setCurrent(timer.current)
-        // изменился элемент, обновить все: цвет фона, иконка кнопки, надпись кнопки
-        if (isTimerChanged) {
-            binding.progress.setPeriod(timer.time)
-            binding.progress.setCurrent(timer.current)
-            DebugHelper.log("TimerViewHolder|isTimerChanged ----------------------------------")
-            changeBackgroundColor(timer.isFinished, binding.root.context)
-            changeButton(timer.isStarted, binding.root.context)
-        } else {
-            if (isTimerChangedFinished) {
-                DebugHelper.log("TimerViewHolder|isFinished ----------------------------------")
-                changeBackgroundColor(timer.isFinished, binding.root.context)
-            }
-            if (isTimerChangedStart) {
-                DebugHelper.log("TimerViewHolder|isTimerChangedStart ----------------------------------")
-                changeButton(timer.isStarted, binding.root.context)
-            }
-        }
     }
 }

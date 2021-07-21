@@ -1,14 +1,16 @@
 package ru.ksart.pomodoro.presentation.extensions
 
 const val START_TIME = "00:00:00"
+private const val TO_SECONDS = 1000
 
 fun Long.displayTime(): String {
     if (this <= 0L) {
         return START_TIME
     }
-    val h = this / 1000 / 3600
-    val m = this / 1000 % 3600 / 60
-    val s = this / 1000 % 60
+    val time = (if (this % TO_SECONDS == 0L) this else this + TO_SECONDS) / TO_SECONDS
+    val h = time / 3600
+    val m = time % 3600 / 60
+    val s = time % 60
 
     return "${displaySlot(h)}:${displaySlot(m)}:${displaySlot(s)}"
 }

@@ -28,15 +28,13 @@ class TimerAdapter(
         private val itemComparator = object : DiffUtil.ItemCallback<TimerWatch>() {
 
             override fun areItemsTheSame(oldItem: TimerWatch, newItem: TimerWatch): Boolean {
-//                DebugHelper.log("TimerAdapter|areItemsTheSame id=${newItem.id}")
                 return oldItem.id == newItem.id
             }
 
             override fun areContentsTheSame(oldItem: TimerWatch, newItem: TimerWatch): Boolean {
-//                DebugHelper.log("TimerAdapter|areContentsTheSame id=${newItem.id} ${oldItem.currentMsOld} = ${newItem.currentMs}")
-                return oldItem.currentOld == newItem.current &&
-                       oldItem.isStartedOld == newItem.isStarted &&
-                       oldItem.isFinishedOld == newItem.isFinished
+                return oldItem.current == newItem.current &&
+                       oldItem.isStarted == newItem.isStarted &&
+                       oldItem.isFinished == newItem.isFinished
             }
 
             override fun getChangePayload(oldItem: TimerWatch, newItem: TimerWatch) = Any()

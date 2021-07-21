@@ -102,7 +102,7 @@ class MainFragment : Fragment(), LifecycleObserver {
         lifecycleScope.launchWhenStarted {
             viewModel.listTimers.collect {
                 DebugHelper.log("MainFragment|bindViewModel set list")
-                adapter.submitList(it.second)
+                adapter.submitList(it)
             }
         }
         lifecycleScope.launchWhenStarted {

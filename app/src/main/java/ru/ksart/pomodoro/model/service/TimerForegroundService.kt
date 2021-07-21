@@ -13,7 +13,7 @@ import ru.ksart.pomodoro.presentation.extensions.displayTime
 import ru.ksart.pomodoro.presentation.main.MainActivity
 import ru.ksart.pomodoro.utils.DebugHelper
 
-class TimerForegroundService: Service() {
+class TimerForegroundService : Service() {
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private var isServiceStarted = false
     private var notificationManager: NotificationManager? = null
@@ -30,7 +30,7 @@ class TimerForegroundService: Service() {
             .setSmallIcon(R.drawable.ic_alarm)
     }
 
-    override fun onBind(intent: Intent?): IBinder?  = null
+    override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onCreate() {
         DebugHelper.log("Service|onCreate")

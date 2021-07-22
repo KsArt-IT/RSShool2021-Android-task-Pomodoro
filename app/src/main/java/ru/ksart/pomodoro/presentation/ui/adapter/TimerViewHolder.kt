@@ -1,6 +1,5 @@
 package ru.ksart.pomodoro.presentation.ui.adapter
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.AnimationDrawable
 import androidx.core.view.isInvisible
@@ -15,10 +14,10 @@ import ru.ksart.pomodoro.utils.isAndroid6
 
 class TimerViewHolder(
     private val binding: ItemTimerBinding,
-    onTimerListener: (timerId: Int, action: TimerAction) -> Unit,
+    onTimerListener: (timerId: Long, action: TimerAction) -> Unit,
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    private var id = -1
+    private var id = -1L
     private var isStarted = false
     private var isFinished = false
 
@@ -65,7 +64,6 @@ class TimerViewHolder(
         }
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     fun bind(timer: TimerWatch) {
         DebugHelper.log("----------------------------------------------")
         DebugHelper.log("TimerViewHolder|bind id=$id ? timer.id=${timer.id}")
@@ -75,7 +73,7 @@ class TimerViewHolder(
             isStarted = timer.isStarted
             isFinished = timer.isFinished
 
-            binding.progress.setPeriod(timer.time)
+            binding.progress.setPeriod(timer.startTime)
 
             DebugHelper.log("TimerViewHolder|isTimerChanged ----------------------------------")
 

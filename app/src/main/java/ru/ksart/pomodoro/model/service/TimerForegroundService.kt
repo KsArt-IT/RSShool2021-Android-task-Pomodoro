@@ -1,17 +1,22 @@
 package ru.ksart.pomodoro.model.service
 
+import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.media.RingtoneManager
 import android.os.IBinder
+import android.os.SystemClock
 import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.*
 import ru.ksart.pomodoro.R
 import ru.ksart.pomodoro.presentation.extensions.displayTime
 import ru.ksart.pomodoro.presentation.main.MainActivity
 import ru.ksart.pomodoro.utils.DebugHelper
+import ru.ksart.pomodoro.utils.isAndroid8
 
 class TimerForegroundService : Service() {
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
@@ -50,8 +55,10 @@ class TimerForegroundService : Service() {
             DebugHelper.log("Service|processCommand Command=$it")
             when (it) {
                 COMMAND_START -> {
-                    val startTime = intent.extras?.getLong(STARTED_TIMER_TIME_MS) ?: return
-                    commandStart(startTime)
+                    val startTime = intent.extras?.getLong(STARTED_TIMER_TIME_MS)
+                        ?: SystemClock.elapsedRealtime()
+                    val timerTime = intent.extras?.getLong(TIMER_TIME_MS) ?: return
+                    commandStart(startTime, timerTime)
                 }
                 COMMAND_STOP -> commandStop()
                 else -> return
@@ -59,32 +66,42 @@ class TimerForegroundService : Service() {
         }
     }
 
-    private fun commandStart(startTime: Long) {
+    private fun commandStart(startTime: Long, timerTime: Long) {
         DebugHelper.log("Service|commandStart")
         if (isServiceStarted) return
         try {
+            moveToStartedState()
             startForegroundAndShowNotification()
-            continueTimer(startTime)
+            continueTimer(startTime, timerTime)
         } finally {
             isServiceStarted = true
         }
     }
 
-    private fun continueTimer(startTime: Long) {
+    private fun continueTimer(startTime: Long, timerTime: Long) {
         coroutineScope.launch {
-            DebugHelper.log("Service|continueTimer startTime=$startTime")
-            var i = startTime
-            while (i >= 0) {
-                DebugHelper.log("Service|continueTimer i=$i")
+            DebugHelper.log("Service|continueTimer startTime=$startTime timerTime=$timerTime")
+            var timeCurrent = startTime
+            var timeStart = timeCurrent
+            var time = timerTime
+            while (time > 250) {
+                DebugHelper.log("Service|continueTimer time=$time")
                 notificationManager?.notify(
                     NOTIFICATION_ID,
                     getNotification(
-                        i.displayTime()
+                        time.displayTime()
                     )
                 )
                 delay(INTERVAL)
-                i -= INTERVAL
+                timeCurrent = SystemClock.elapsedRealtime()
+                time -= (timeCurrent - timeStart)
+                timeStart = timeCurrent
             }
+            // пошлем завершающий 0 и проиграем мелодию
+            notificationManager?.notify(
+                NOTIFICATION_ID,
+                getNotification(0L.displayTime(), isSound = true)
+            )
         }
     }
 
@@ -102,9 +119,20 @@ class TimerForegroundService : Service() {
 
     private fun getPendingIntent(): PendingIntent? {
         DebugHelper.log("Service|getPendingIntent")
-        val resultIntent = Intent(this, MainActivity::class.java)
-        resultIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-        return PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_ONE_SHOT)
+        val resultIntent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        }
+        return PendingIntent.getActivity(this, 0, resultIntent, FLAG_UPDATE_CURRENT)
+    }
+
+    private fun moveToStartedState() {
+        if (isAndroid8) {
+            DebugHelper.log("Service|moveToStartedState Running on  Android 8 or higher")
+            startForegroundService(Intent(this, TimerForegroundService::class.java))
+        } else {
+            DebugHelper.log("Service|moveToStartedState Running on Android N or lower")
+            startService(Intent(this, TimerForegroundService::class.java))
+        }
     }
 
     private fun startForegroundAndShowNotification() {
@@ -113,7 +141,14 @@ class TimerForegroundService : Service() {
         startForeground(NOTIFICATION_ID, notification)
     }
 
-    private fun getNotification(content: String) = builder.setContentText(content).build()
+    private fun getNotification(content: String, isSound: Boolean = false): Notification {
+        return builder.setContentText(content)
+            .apply {
+                // проиграем мелодию
+                if (isSound) setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+            }
+            .build()
+    }
 
     companion object {
         private const val NOTIFICATION_ID = 145145
@@ -124,5 +159,6 @@ class TimerForegroundService : Service() {
         const val COMMAND_STOP = "COMMAND_STOP"
         const val COMMAND_ID = "COMMAND_ID"
         const val STARTED_TIMER_TIME_MS = "STARTED_TIMER_TIME"
+        const val TIMER_TIME_MS = "TIMER_TIME"
     }
 }

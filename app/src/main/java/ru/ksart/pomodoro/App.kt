@@ -13,6 +13,7 @@ class App : Application() {
         // создадим канал
         NotificationChannels.create(this)
         // режим отладки
+/*
         if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(
                 StrictMode.ThreadPolicy.Builder()
@@ -23,5 +24,6 @@ class App : Application() {
                     .build()
             )
         }
+*/
     }
 }

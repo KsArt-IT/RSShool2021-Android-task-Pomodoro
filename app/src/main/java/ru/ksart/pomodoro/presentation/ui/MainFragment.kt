@@ -10,27 +10,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.TRANSLATION_Y
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.*
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.collect
 import ru.ksart.pomodoro.R
 import ru.ksart.pomodoro.databinding.FragmentMainBinding
 import ru.ksart.pomodoro.model.service.TimerForegroundService
+import ru.ksart.pomodoro.presentation.extensions.toast
 import ru.ksart.pomodoro.presentation.ui.adapter.TimerAdapter
 import ru.ksart.pomodoro.presentation.ui.model.TimerViewModel
 import ru.ksart.pomodoro.utils.DebugHelper
+import kotlin.system.exitProcess
 
 class MainFragment : Fragment(), LifecycleObserver {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = requireNotNull(_binding)
+    private var backPressedHold = 0L
 
     private val viewModel by viewModels<TimerViewModel>()
 
-    private val adapter
+    private val timerAdapter
         get() = checkNotNull(binding.recycler.adapter as TimerAdapter) {
             "TimerAdapter isn't initialized"
         }
@@ -63,7 +67,23 @@ class MainFragment : Fragment(), LifecycleObserver {
         initAdapter()
         bindViewModel()
         bindAddTimerFromDialog()
+        initBack()
+//        test()
     }
+
+/*
+    private fun test() {
+        lifecycleScope.launchWhenStarted {
+            delay(1000)
+            var i = 1000
+            while (i >= 0) {
+                i--
+                viewModel.addTimer(60)
+                delay(1)
+            }
+        }
+    }
+*/
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -73,6 +93,19 @@ class MainFragment : Fragment(), LifecycleObserver {
     override fun onDestroy() {
         super.onDestroy()
         ProcessLifecycleOwner.get().lifecycle.removeObserver(this)
+    }
+
+    private fun initBack() {
+        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner) {
+            if (backPressedHold + 3000 > System.currentTimeMillis()) {
+                // выход из приложения
+                activity?.finish()
+                exitProcess(0)
+            } else {
+                toast(R.string.press_back_exit)
+                backPressedHold = System.currentTimeMillis()
+            }
+        }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
@@ -102,7 +135,7 @@ class MainFragment : Fragment(), LifecycleObserver {
         lifecycleScope.launchWhenStarted {
             viewModel.listTimers.collect {
                 DebugHelper.log("MainFragment|bindViewModel set list")
-                adapter.submitList(it)
+                timerAdapter.submitList(it)
             }
         }
         lifecycleScope.launchWhenStarted {
@@ -114,16 +147,17 @@ class MainFragment : Fragment(), LifecycleObserver {
     }
 
     // запустим или остановим сервис с таймером
-    private fun startStopTimerService(startTime: Long) {
-        DebugHelper.log("MainFragment|timerBackgrounded startTime=$startTime")
-        if (startTime == 0L) return
+    private fun startStopTimerService(time: Pair<Long, Long>) {
+        DebugHelper.log("MainFragment|timerBackgrounded startTime=${time.first} timer=${time.second}")
+        if (time.second == 0L) return
         val intent = Intent(requireContext(), TimerForegroundService::class.java)
-        if (startTime > 0) {
+        if (time.second > 0) {
             intent.putExtra(
                 TimerForegroundService.COMMAND_ID,
                 TimerForegroundService.COMMAND_START
             )
-            intent.putExtra(TimerForegroundService.STARTED_TIMER_TIME_MS, startTime)
+            intent.putExtra(TimerForegroundService.STARTED_TIMER_TIME_MS, time.first)
+            intent.putExtra(TimerForegroundService.TIMER_TIME_MS, time.second)
         } else {
             intent.putExtra(
                 TimerForegroundService.COMMAND_ID,
@@ -138,23 +172,6 @@ class MainFragment : Fragment(), LifecycleObserver {
         val navController = findNavController()
         // тут нужен текущий фрагмент, его стек мы обрабатываем
         val navBackStackEntry = navController.getBackStackEntry(R.id.mainFragment)
-/*
-        val observer = LifecycleEventObserver { _, event ->
-            if (
-                (event == Lifecycle.Event.ON_RESUME ||
-                event == Lifecycle.Event.ON_ANY)
-                && navBackStackEntry.savedStateHandle.contains(KEY_ADD_TIMER)) {
-                val time = navBackStackEntry.savedStateHandle.get<Long>(KEY_ADD_TIMER) ?: 0
-                if (time > 0) viewModel.addTimer(time)
-            }
-        }
-        navBackStackEntry.lifecycle.addObserver(observer)
-        viewLifecycleOwner.lifecycle.addObserver(LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_DESTROY) {
-                navBackStackEntry.lifecycle.removeObserver(observer)
-            }
-        })
-*/
         // очистим состояние при пересоздании
         navBackStackEntry.savedStateHandle.remove<Long>(KEY_ADD_TIMER)
 
@@ -162,25 +179,8 @@ class MainFragment : Fragment(), LifecycleObserver {
             getLiveData<Long>(KEY_ADD_TIMER).observe(viewLifecycleOwner) { time ->
                 // добавим таймер
                 if (time > 0) viewModel.addTimer(time)
-/*
-                // очистим состояние
-                navBackStackEntry.savedStateHandle.clearSavedStateProvider(KEY_ADD_TIMER)
-                findNavController().currentBackStackEntry?.savedStateHandle
-                    ?.clearSavedStateProvider(KEY_ADD_TIMER)
-*/
             }
         }
-/*
-        // для диалога так не работает
-        findNavController().currentBackStackEntry?.savedStateHandle
-            ?.getLiveData<Long>(KEY_ADD_TIMER).observe(viewLifecycleOwner) { time ->
-                // добавим таймер
-                if (time > 0) viewModel.addTimer(time)
-                // очистим состояние
-                findNavController().currentBackStackEntry?.savedStateHandle
-                    ?.clearSavedStateProvider(KEY_ADD_TIMER)
-            }
-*/
     }
 
     private fun initFab() {

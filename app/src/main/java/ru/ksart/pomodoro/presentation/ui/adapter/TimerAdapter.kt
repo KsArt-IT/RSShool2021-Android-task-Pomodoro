@@ -9,7 +9,7 @@ import ru.ksart.pomodoro.model.data.TimerWatch
 import ru.ksart.pomodoro.presentation.extensions.inflate
 
 class TimerAdapter(
-    private val onTimerListener: (timerId: Int, action: TimerAction) -> Unit,
+    private val onTimerListener: (timerId: Long, action: TimerAction) -> Unit,
 ) : ListAdapter<TimerWatch, TimerViewHolder>(itemComparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimerViewHolder {
@@ -33,11 +33,14 @@ class TimerAdapter(
 
             override fun areContentsTheSame(oldItem: TimerWatch, newItem: TimerWatch): Boolean {
                 return oldItem.current == newItem.current &&
-                       oldItem.isStarted == newItem.isStarted &&
-                       oldItem.isFinished == newItem.isFinished
+                        oldItem.isStarted == newItem.isStarted &&
+                        oldItem.isFinished == newItem.isFinished
             }
 
-            override fun getChangePayload(oldItem: TimerWatch, newItem: TimerWatch) = Any()
+            // override fun getChangePayload(oldItem: TimerWatch, newItem: TimerWatch) = Any()
+            override fun getChangePayload(oldItem: TimerWatch, newItem: TimerWatch): Any? {
+                return if (oldItem.current != newItem.current) Any() else null
+            }
         }
     }
 }

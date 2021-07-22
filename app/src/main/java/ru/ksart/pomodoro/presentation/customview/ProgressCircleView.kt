@@ -9,7 +9,6 @@ import android.view.View
 import androidx.annotation.AttrRes
 import ru.ksart.pomodoro.R
 import ru.ksart.pomodoro.utils.DebugHelper
-import kotlin.math.max
 
 class ProgressCircleView @JvmOverloads constructor(
     context: Context,
@@ -59,14 +58,12 @@ class ProgressCircleView @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         if (periodMs == 0L || currentMs == 0L) return
-        val mWidth = max(1, width - 2).toFloat()
-        val mHeight = max(1, height - 2).toFloat()
         DebugHelper.log("onDraw periodMs=$periodMs currentMs=$currentMs sweepAngle=$sweepAngle")
         canvas.drawArc(
-            1f,
-            1f,
-            mWidth,
-            mHeight,
+            0f,
+            0f,
+            width.toFloat(),
+            height.toFloat(),
             270F,
             sweepAngle,
             true,
@@ -75,10 +72,10 @@ class ProgressCircleView @JvmOverloads constructor(
         // нарисуем контур окружности
         if (mStyle == FILL)
             canvas.drawArc(
-                1f,
-                1f,
-                mWidth,
-                mHeight,
+                0f,
+                0f,
+                width.toFloat(),
+                height.toFloat(),
                 0F,
                 360F,
                 true,
@@ -100,6 +97,7 @@ class ProgressCircleView @JvmOverloads constructor(
     private fun calculateAngle() {
         // пересчитаем угол
         sweepAngle = currentMs * 360F / periodMs
+        // перерисуем
         invalidate()
     }
 

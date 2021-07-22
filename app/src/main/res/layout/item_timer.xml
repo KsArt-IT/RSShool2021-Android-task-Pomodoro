@@ -58,10 +58,9 @@
 
         <ImageButton
             android:id="@+id/delete_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginEnd="@dimen/time_margin"
-            android:background="@color/cardview_light_background"
             android:backgroundTint="@color/transparent"
             android:contentDescription="@string/delete_button_description"
             android:padding="8dp"
@@ -69,8 +68,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_delete"
-            app:strokeColor="?attr/colorPrimaryDark"
-            app:strokeWidth="3dp"
             app:tint="?attr/colorPrimary" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

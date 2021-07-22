@@ -2,15 +2,15 @@ package ru.ksart.pomodoro.presentation.ui.model
 
 import android.os.CountDownTimer
 
-class DecCountDownTimer(
-    private var timeMs: Long,
-    private val onTickTimer: (time: Long) -> Unit,
-    private val onFinishTimer: () -> Unit
+class MyCountDownTimer(
+    timeMs: Long,
+    onTickTimer: (time: Long) -> Unit,
+    onFinishTimer: () -> Unit
 ) {
     private var countDownTimer: CountDownTimer? = null
 
     init {
-        countDownTimer = getCountDownTimer()
+        countDownTimer = getCountDownTimer(timeMs, onTickTimer, onFinishTimer)
     }
 
     fun start() {
@@ -22,16 +22,19 @@ class DecCountDownTimer(
         countDownTimer = null
     }
 
-    private fun getCountDownTimer(): CountDownTimer {
+    private fun getCountDownTimer(
+        timeMs: Long,
+        onTickTimer: (time: Long) -> Unit,
+        onFinishTimer: () -> Unit
+    ): CountDownTimer {
         return object : CountDownTimer(timeMs, TIMER_INTERVAL) {
 
             override fun onTick(millisUntilFinished: Long) {
-                timeMs -= TIMER_INTERVAL
-                onTickTimer(timeMs)
+                onTickTimer(millisUntilFinished)
             }
 
             override fun onFinish() {
-                onFinishTimer
+                onFinishTimer()
             }
         }
     }

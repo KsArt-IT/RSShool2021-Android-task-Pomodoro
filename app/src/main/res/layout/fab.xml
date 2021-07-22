@@ -18,7 +18,7 @@
         app:layout_constraintBottom_toTopOf="@+id/fab_action_5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_1" />
+        app:srcCompat="@drawable/ic_1_min" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_action_5"
@@ -29,7 +29,7 @@
         app:layout_constraintBottom_toTopOf="@+id/fab_action_25"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_5" />
+        app:srcCompat="@drawable/ic_5_min" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@id/fab_action_25"
@@ -40,7 +40,7 @@
         app:layout_constraintBottom_toTopOf="@+id/fab_action_add"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_25" />
+        app:srcCompat="@drawable/ic_25_min" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@id/fab_action_add"

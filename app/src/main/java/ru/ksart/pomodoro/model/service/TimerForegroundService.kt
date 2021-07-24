@@ -97,10 +97,10 @@ class TimerForegroundService : Service() {
                 time -= (timeCurrent - timeStart)
                 timeStart = timeCurrent
             }
-            // пошлем завершающий 0 и проиграем мелодию
+            // пошлем завершающий 0
             notificationManager?.notify(
                 NOTIFICATION_ID,
-                getNotification(0L.displayTime(), isSound = true)
+                getNotification(0L.displayTime())
             )
         }
     }
@@ -141,12 +141,8 @@ class TimerForegroundService : Service() {
         startForeground(NOTIFICATION_ID, notification)
     }
 
-    private fun getNotification(content: String, isSound: Boolean = false): Notification {
+    private fun getNotification(content: String): Notification {
         return builder.setContentText(content)
-            .apply {
-                // проиграем мелодию
-                if (isSound) setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-            }
             .build()
     }
 

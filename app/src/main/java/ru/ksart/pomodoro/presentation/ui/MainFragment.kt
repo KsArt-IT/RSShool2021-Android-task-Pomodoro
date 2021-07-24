@@ -5,6 +5,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.graphics.drawable.Animatable
+import android.media.RingtoneManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -143,6 +144,20 @@ class MainFragment : Fragment(), LifecycleObserver {
         }
         lifecycleScope.launchWhenCreated {
             viewModel.timerBackgrounded.collect(::startStopTimerService)
+        }
+        lifecycleScope.launchWhenCreated {
+            viewModel.isFinished.collect {
+                if (it) {
+                    context?.run {
+                        RingtoneManager
+                            .getRingtone(
+                                this,
+                                RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+                            )
+                            .play()
+                    }
+                }
+            }
         }
     }
 

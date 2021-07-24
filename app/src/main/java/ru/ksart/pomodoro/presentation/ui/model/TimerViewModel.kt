@@ -33,6 +33,10 @@ class TimerViewModel : ViewModel() {
     private val _isUseFab = MutableStateFlow(false)
     val isUseFab: StateFlow<Boolean> = _isUseFab.asStateFlow()
 
+    // проиграть сигнал завершения
+    private val _isFinished = MutableStateFlow(false)
+    val isFinished: StateFlow<Boolean> = _isFinished.asStateFlow()
+
 /*
     fun init() {
         timers.clear()
@@ -120,6 +124,7 @@ class TimerViewModel : ViewModel() {
             isFinished = false,
         )
         timerCurrent?.run {
+            _isFinished.value = false
             countDownTimer = MyCountDownTimer(current, ::onTickTimer, ::onFinishTimer)
             countDownTimer?.start()
 
@@ -151,6 +156,7 @@ class TimerViewModel : ViewModel() {
                 current = startTime
 
                 setListByTimerCurrent()
+                _isFinished.value = true
             }
         }
     }
